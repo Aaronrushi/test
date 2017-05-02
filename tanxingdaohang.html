@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>弹性导航</title>
+	<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			#outer{
+				width: 1200px;
+				margin: 100px auto;
+				border-top: 1px solid red;
+				border-left: 1px solid red;
+				overflow: hidden;
+				position: relative;
+			}
+			#outer li{
+				list-style: none;
+				float: left;
+				width: 199px;
+				border-right: 1px solid red;
+				border-bottom: 1px solid red;
+				text-align: center;
+				height: 50px;
+				line-height: 50px;
+			}
+			#outer li.active{
+				color: #FFFFFF;
+			}
+			#outer #mvList{
+				position: absolute;
+				left: 0;
+				top: 0;
+				background: red;
+				z-index: -1;
+			}
+			
+		</style>
+
+</head>
+<body>
+	<ul id="outer">
+			<li class="active">首页</li>
+			<li>详情页1</li>
+			<li>详情页2</li>
+			<li>详情页3</li>
+			<li>关于我们</li>
+			<li>联系我们</li>
+			<!-- 红色方块 -->
+			<li id="mvList"></li>
+	</ul>
+	<script type="text/javascript" src="tween.js"></script>
+	<script type="text/javascript">
+		var outer = document.getElementById('outer');
+		var lis = outer.getElementsByTagName('li');
+		var time = null;
+		var mvList = document.getElementById('mvList');
+		var index = 0;//决定鼠标移出后滑块返回的位置
+		//对每个导航窗口绑定事件
+		for(var i=0;i<lis.length;i++){
+			lis[i].index = i;
+			lis[i].onmouseover=function(){
+				clear();
+				this.className='active';
+				move(this.index);
+			}
+			lis[i].onmouseout=function(){
+				//鼠标移出，红块返回首页，字体变为白色
+				clear();
+				lis[index].className='active';
+				move(index);//全局index
+			}
+			//鼠标点击事件
+			lis[i].onclick=function(){
+				index = this.index;
+			}
+		}
+		
+
+		//创建红块移动的函数
+		function move(ind){
+				var t = 0;
+				var maxT = 50;
+				var start = mvList.offsetLeft;
+				var end = lis[0].offsetWidth * ind;
+				var change = end - start;
+				clearInterval(time);
+				time = setInterval(function(){
+					t++;
+					if(t>=maxT){
+						clearInterval(time);
+					}
+					mvList.style.left = Tween.Bounce.easeOut(t,start,change,maxT) + 'px';
+				},10);
+		}
+		//
+		function clear(){
+			for(var i=0;i<lis.length-1;i++){
+				lis[i].className = '';
+			}
+		}
+
+
+	</script>
+
+	
+</body>
+</html>
